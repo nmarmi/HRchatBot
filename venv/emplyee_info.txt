@@ -1,0 +1,24 @@
+[
+    {
+        "id#": "AA001",
+        "name": "John Johnson",
+        "role": "business analyst",
+        "monthly_salary ($)": "10000",
+        "pay_day_of_month": "21",
+        "holidays_taken": "0",
+        "holidays_left": "14",
+        "bonuses": "stocks",
+        "date_hired": "01/01/2021"
+    },
+    {
+        "id#": "AA002",
+        "name": "Claire Ippolito",
+        "role": "software developer",
+        "monthly_salary ($)": "15000",
+        "pay_day_of_month": "13",
+        "holidays_taken": "4",
+        "holidays_left": "10",
+        "bonuses": "none",
+        "date_hired": "04/14/2022"
+    }
+]
