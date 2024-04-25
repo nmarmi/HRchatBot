@@ -9,8 +9,9 @@ client = OpenAI()
 
 knowledge_file = open("/Users/nicolomarmi/PycharmProjects/HRchatBot/venv/emplyee_info.txt", "r")
 knowledge = knowledge_file.read()
-question = f"Use this Json knowledge about employees to answer the question: \n{knowledge}\n\nQuestion: "
-question += input("How  can I help you?\n")
+knowledge_file.close()
+emplid = "AA002"
+question = input("How  can I help you?\n")
 
 # Initialize HR assistant
 assistant = client.beta.assistants.create(
@@ -34,7 +35,7 @@ message = client.beta.threads.messages.create(
 run = client.beta.threads.runs.create_and_poll(
     thread_id=thread.id,
     assistant_id=assistant.id,
-    instructions="The user is a junior employee",
+    instructions=f"Access this information to accuretely answer the question: {knowledge}.\nThis is the employee {emplid}, only answer questions about him/her, without revealing other employee's information",
 )
 
 if run.status == 'completed':
