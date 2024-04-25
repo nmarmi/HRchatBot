@@ -10,8 +10,7 @@ client = OpenAI()
 knowledge_file = open("/Users/nicolomarmi/PycharmProjects/HRchatBot/venv/emplyee_info.txt", "r")
 knowledge = knowledge_file.read()
 knowledge_file.close()
-emplid = "AA002"
-question = input("How  can I help you?\n")
+emplid = input("Please enter emplid: ")
 
 # Initialize HR assistant
 assistant = client.beta.assistants.create(
@@ -23,30 +22,60 @@ assistant = client.beta.assistants.create(
 
 # A Thread represents a conversation between a user and one or many Assistants.
 thread = client.beta.threads.create()
+#
+# # get message from user
+# message = client.beta.threads.messages.create(
+#     thread_id=thread.id,
+#     role="user",
+#     content=question
+# )
+#
+# # run model to generate response
+# run = client.beta.threads.runs.create_and_poll(
+#     thread_id=thread.id,
+#     assistant_id=assistant.id,
+#     instructions=f"Access this information to accuretely answer the question: {knowledge}.\nThis is the employee {emplid}, only answer questions about him/her, without revealing other employee's information",
+# )
+#
+# if run.status == 'completed':
+#     messages = client.beta.threads.messages.list(
+#         thread_id=thread.id
+#     )
+#     print(messages.data[0].content[0].text.value)
+# else:
+#     print("oh oh, something went wrong")
+#     print(run.status)
+# Main loop to ask multiple questions
+while True:
+    # get message from user
+    question = input("How can I help you? (Type 'exit' to quit)\n")
+    if question.lower() == 'exit':
+        break
 
-# get message from user
-message = client.beta.threads.messages.create(
-    thread_id=thread.id,
-    role="user",
-    content=question
-)
-
-# run model to generate response
-run = client.beta.threads.runs.create_and_poll(
-    thread_id=thread.id,
-    assistant_id=assistant.id,
-    instructions=f"Access this information to accuretely answer the question: {knowledge}.\nThis is the employee {emplid}, only answer questions about him/her, without revealing other employee's information",
-)
-
-if run.status == 'completed':
-    messages = client.beta.threads.messages.list(
-        thread_id=thread.id
+    message = client.beta.threads.messages.create(
+        thread_id=thread.id,
+        role="user",
+        content=question
     )
-    print(messages.data[0].content[0].text.value)
-else:
-    print("oh oh, something went wrong")
-    print(run.status)
 
+    # run model to generate response
+    run = client.beta.threads.runs.create_and_poll(
+        thread_id=thread.id,
+        assistant_id=assistant.id,
+        instructions=f"Access this information to accurately answer the question: {knowledge}\nThis is the employee {emplid}, only answer questions about him/her, without revealing other employee's information",
+    )
+
+    if run.status == 'completed':
+        messages = client.beta.threads.messages.list(
+            thread_id=thread.id
+        )
+        # Print each message in the thread
+        for message in messages.data:
+            if message.role == 'assistant':
+                print(message.content[0].text.value)
+    else:
+        print("Oh oh, something went wrong")
+        print(run.status)
 """
 TODO:
 - pass knowledge (json file)
